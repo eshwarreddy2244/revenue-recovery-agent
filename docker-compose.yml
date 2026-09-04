@@ -1,0 +1,12 @@
+services:
+  revenue-recovery-agent:
+    build: .
+    ports:
+      - "8501:8501"
+    env_file:
+      - .env
+    volumes:
+      - revenue_recovery_data:/app/data
+
+volumes:
+  revenue_recovery_data:

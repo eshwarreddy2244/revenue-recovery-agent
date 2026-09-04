@@ -1,0 +1,119 @@
+<svg width="1000" height="620" viewBox="0 0 1000 620" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="620" fill="#ffffff"/>
+
+  <text x="30" y="34" font-size="18" font-weight="600" fill="#1a1a1a">AI Revenue Recovery Agent — architecture</text>
+  <text x="30" y="54" font-size="12" fill="#666">Deterministic core (diagnose / gate / sequencer) in blue-gray. Optional LLM-touched modules in amber.</text>
+
+  <!-- Row 1: intake -->
+  <g>
+    <rect x="30" y="80" width="150" height="56" rx="8" fill="#EAF1FB" stroke="#4C7FB0" stroke-width="1"/>
+    <text x="105" y="103" font-size="13" font-weight="600" fill="#1B3A57" text-anchor="middle">generate_data.py</text>
+    <text x="105" y="120" font-size="10.5" fill="#33546F" text-anchor="middle">176 synthetic events</text>
+  </g>
+
+  <line x1="180" y1="108" x2="222" y2="108" stroke="#888" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <g>
+    <rect x="224" y="80" width="150" height="56" rx="8" fill="#EAF1FB" stroke="#4C7FB0" stroke-width="1"/>
+    <text x="299" y="103" font-size="13" font-weight="600" fill="#1B3A57" text-anchor="middle">diagnose.py</text>
+    <text x="299" y="120" font-size="10.5" fill="#33546F" text-anchor="middle">deterministic, no LLM</text>
+  </g>
+
+  <line x1="374" y1="108" x2="416" y2="108" stroke="#888" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <g>
+    <rect x="418" y="80" width="160" height="56" rx="8" fill="#EAF1FB" stroke="#4C7FB0" stroke-width="1.6"/>
+    <text x="498" y="103" font-size="13" font-weight="700" fill="#1B3A57" text-anchor="middle">policy_gate.py</text>
+    <text x="498" y="120" font-size="10.5" fill="#33546F" text-anchor="middle">pure safety gate</text>
+  </g>
+
+  <line x1="578" y1="108" x2="620" y2="108" stroke="#888" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <g>
+    <rect x="622" y="80" width="170" height="56" rx="8" fill="#EAF1FB" stroke="#4C7FB0" stroke-width="1"/>
+    <text x="707" y="99" font-size="13" font-weight="600" fill="#1B3A57" text-anchor="middle">sequencer.py</text>
+    <text x="707" y="115" font-size="10.5" fill="#33546F" text-anchor="middle">re-checks gate every step</text>
+    <text x="707" y="129" font-size="10.5" fill="#33546F" text-anchor="middle">3-step or fast-track plan</text>
+  </g>
+
+  <!-- action_selector feeds into sequencer -->
+  <rect x="622" y="10" width="170" height="46" rx="8" fill="#FDF3E3" stroke="#C79A3F" stroke-width="1"/>
+  <text x="707" y="30" font-size="12" font-weight="600" fill="#7A5A16" text-anchor="middle">action_selector.py</text>
+  <text x="707" y="45" font-size="10" fill="#8A6A26" text-anchor="middle">LTV-aware plan choice</text>
+  <line x1="707" y1="56" x2="707" y2="78" stroke="#888" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- Row 2: adapters -->
+  <line x1="707" y1="136" x2="707" y2="178" stroke="#888" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <g>
+    <rect x="590" y="180" width="150" height="56" rx="8" fill="#EAF1FB" stroke="#4C7FB0" stroke-width="1"/>
+    <text x="665" y="203" font-size="12.5" font-weight="600" fill="#1B3A57" text-anchor="middle">smart_retry.py</text>
+    <text x="665" y="219" font-size="10" fill="#33546F" text-anchor="middle">simulated</text>
+  </g>
+
+  <g>
+    <rect x="756" y="180" width="150" height="56" rx="8" fill="#E9F5EC" stroke="#3E8E5B" stroke-width="1"/>
+    <text x="831" y="203" font-size="12.5" font-weight="600" fill="#1D4E30" text-anchor="middle">payment_link.py</text>
+    <text x="831" y="219" font-size="10" fill="#2C6A45" text-anchor="middle">real Razorpay test API</text>
+  </g>
+  <line x1="740" y1="208" x2="754" y2="208" stroke="#888" stroke-width="1.2"/>
+
+  <!-- audit -->
+  <line x1="707" y1="236" x2="707" y2="278" stroke="#888" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <g>
+    <rect x="590" y="280" width="235" height="56" rx="8" fill="#F0F0EC" stroke="#7A7A70" stroke-width="1"/>
+    <text x="707" y="303" font-size="13" font-weight="600" fill="#333" text-anchor="middle">audit.py (SQLite)</text>
+    <text x="707" y="319" font-size="10.5" fill="#555" text-anchor="middle">audit_log · escalations · batch_runs · issued_links</text>
+  </g>
+
+  <!-- escalation + report branch off audit -->
+  <line x1="660" y1="336" x2="500" y2="380" stroke="#888" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="750" y1="336" x2="880" y2="380" stroke="#888" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <g>
+    <rect x="380" y="382" width="200" height="56" rx="8" fill="#FDF3E3" stroke="#C79A3F" stroke-width="1"/>
+    <text x="480" y="405" font-size="12.5" font-weight="600" fill="#7A5A16" text-anchor="middle">escalation.py</text>
+    <text x="480" y="421" font-size="10" fill="#8A6A26" text-anchor="middle">priority-scored human queue</text>
+  </g>
+
+  <g>
+    <rect x="800" y="382" width="180" height="56" rx="8" fill="#EAF1FB" stroke="#4C7FB0" stroke-width="1"/>
+    <text x="890" y="405" font-size="12.5" font-weight="600" fill="#1B3A57" text-anchor="middle">report.py</text>
+    <text x="890" y="421" font-size="10" fill="#33546F" text-anchor="middle">revenue at risk / recovered</text>
+  </g>
+
+  <!-- llm_triage feeding both diagnose (pre-processing) and escalation copy -->
+  <rect x="30" y="382" width="220" height="66" rx="8" fill="#FDF3E3" stroke="#C79A3F" stroke-width="1"/>
+  <text x="140" y="404" font-size="12.5" font-weight="600" fill="#7A5A16" text-anchor="middle">llm_triage.py (Groq)</text>
+  <text x="140" y="420" font-size="10" fill="#8A6A26" text-anchor="middle">free-text parsing +</text>
+  <text x="140" y="433" font-size="10" fill="#8A6A26" text-anchor="middle">Hinglish dispute copy — optional</text>
+
+  <line x1="250" y1="410" x2="378" y2="410" stroke="#c79a3f" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+  <text x="314" y="402" font-size="9.5" fill="#8A6A26" text-anchor="middle">pre-processing only</text>
+
+  <!-- dashboard -->
+  <line x1="480" y1="438" x2="480" y2="480" stroke="#888" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="890" y1="438" x2="890" y2="480" stroke="#888" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="140" y1="448" x2="140" y2="500" stroke="#888" stroke-width="1.2"/>
+  <line x1="140" y1="500" x2="440" y2="500" stroke="#888" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <g>
+    <rect x="330" y="482" width="340" height="70" rx="10" fill="#F3EEFB" stroke="#7A5AB0" stroke-width="1.4"/>
+    <text x="500" y="508" font-size="14" font-weight="700" fill="#3A2A66" text-anchor="middle">app.py — Streamlit dashboard</text>
+    <text x="500" y="527" font-size="10.5" fill="#4E3B7A" text-anchor="middle">Overview · Cohorts · Audit log · Escalations · Trends</text>
+    <text x="500" y="541" font-size="10.5" fill="#4E3B7A" text-anchor="middle">Safety-gate demo · LLM triage</text>
+  </g>
+
+  <!-- legend -->
+  <rect x="30" y="580" width="14" height="14" rx="3" fill="#EAF1FB" stroke="#4C7FB0"/>
+  <text x="50" y="591" font-size="11" fill="#333">Deterministic, unit-tested (no LLM)</text>
+  <rect x="290" y="580" width="14" height="14" rx="3" fill="#FDF3E3" stroke="#C79A3F"/>
+  <text x="310" y="591" font-size="11" fill="#333">Optional, LLM-touched (never safety-critical)</text>
+  <rect x="620" y="580" width="14" height="14" rx="3" fill="#E9F5EC" stroke="#3E8E5B"/>
+  <text x="640" y="591" font-size="11" fill="#333">Real external API (Razorpay test mode)</text>
+</svg>

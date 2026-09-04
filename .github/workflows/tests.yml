@@ -1,0 +1,48 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run test suite
+        run: pytest tests/ -v
+
+      - name: Compile-check every module
+        run: python -m compileall -q app.py src scripts
+
+      - name: Verify synthetic data generation
+        run: python -m src.generate_data
+
+      - name: Smoke-test the full pipeline (no live API keys needed)
+        run: |
+          python -c "
+          import json
+          from src.pipeline import run_batch
+          with open('data/synthetic_events.json') as f:
+              events = json.load(f)
+          result = run_batch(events)
+          assert result['invalid_count'] > 0, 'expected some edge-case events to be flagged invalid'
+          assert len(result['sequences']) > 0, 'expected at least one sequence to run'
+          print('Pipeline smoke test OK:', result['report']['net_recovery_rate_pct'], '% recovery')
+          "
